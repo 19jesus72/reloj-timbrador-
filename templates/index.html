@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reloj Timbrador - Técnicos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --success: #10b981;
+            --success-hover: #059669;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at top right, #1e1b4b, #0f172a);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        select {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            font-size: 1rem;
+            appearance: none;
+            outline: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1.25rem;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-entrada {
+            background-color: var(--success);
+            box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.39);
+        }
+
+        .btn-entrada:hover:not(:disabled) {
+            background-color: var(--success-hover);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.23);
+        }
+
+        .btn-salida {
+            background-color: var(--danger);
+            box-shadow: 0 4px 14px 0 rgba(239, 68, 68, 0.39);
+        }
+
+        .btn-salida:hover:not(:disabled) {
+            background-color: var(--danger-hover);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.23);
+        }
+
+        .status {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.875rem;
+            min-height: 1.5rem;
+            border-radius: 8px;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+        
+        .status.show {
+            opacity: 1;
+        }
+
+        .status.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .status.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .status.loading {
+            background: rgba(59, 130, 246, 0.1);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>Reloj Timbrador</h1>
+            <p>Registro de asistencia de campo</p>
+        </div>
+
+        <div class="form-group">
+            <label for="tecnico">Seleccionar Técnico</label>
+            <select id="tecnico">
+                <option value="" disabled selected>Elige tu nombre...</option>
+                <!-- Ejemplos - reemplazar o cargar dinámicamente -->
+                <option value="Carlos Perez">Carlos Perez</option>
+                <option value="Ana Gomez">Ana Gomez</option>
+                <option value="Luis Ramirez">Luis Ramirez</option>
+                <option value="Maria Torres">Maria Torres</option>
+            </select>
+        </div>
+
+        <div class="buttons-container">
+            <button class="btn btn-entrada" onclick="registrar('Entrada')" id="btn-entrada">
+                <span class="btn-text">Registrar Entrada</span>
+                <div class="loader" id="loader-entrada"></div>
+            </button>
+            <button class="btn btn-salida" onclick="registrar('Salida')" id="btn-salida">
+                <span class="btn-text">Registrar Salida</span>
+                <div class="loader" id="loader-salida"></div>
+            </button>
+        </div>
+
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        const statusEl = document.getElementById('status');
+
+        function setStatus(message, type) {
+            statusEl.textContent = message;
+            if (type) {
+                statusEl.className = `status show ${type}`;
+            } else {
+                statusEl.className = 'status';
+            }
+        }
+
+        function toggleLoading(btnId, isLoading) {
+            const btn = document.getElementById(`btn-${btnId.toLowerCase()}`);
+            const text = btn.querySelector('.btn-text');
+            const loader = btn.querySelector('.loader');
+            
+            if (isLoading) {
+                text.style.display = 'none';
+                loader.style.display = 'block';
+                document.getElementById('btn-entrada').disabled = true;
+                document.getElementById('btn-salida').disabled = true;
+            } else {
+                text.style.display = 'block';
+                loader.style.display = 'none';
+                document.getElementById('btn-entrada').disabled = false;
+                document.getElementById('btn-salida').disabled = false;
+            }
+        }
+
+        function registrar(tipoRegistro) {
+            const tecnico = document.getElementById('tecnico').value;
+
+            if (!tecnico) {
+                setStatus('Por favor, selecciona un técnico.', 'error');
+                return;
+            }
+
+            if (!navigator.geolocation) {
+                setStatus('Tu navegador no soporta geolocalización.', 'error');
+                alert('Geolocalización no soportada por el navegador.');
+                return;
+            }
+
+            setStatus(`Obteniendo ubicación para ${tipoRegistro}...`, 'loading');
+            toggleLoading(tipoRegistro, true);
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const datos = {
+                        nombre_tecnico: tecnico,
+                        tipo_registro: tipoRegistro,
+                        latitud: position.coords.latitude,
+                        longitud: position.coords.longitude,
+                        precision_gps: position.coords.accuracy
+                    };
+
+                    enviarDatos(datos, tipoRegistro);
+                },
+                (error) => {
+                    toggleLoading(tipoRegistro, false);
+                    let mensajeError = 'Error al obtener ubicación.';
+                    
+                    if (error.code === error.PERMISSION_DENIED) {
+                        mensajeError = 'PERMISO DENEGADO: Debes activar la ubicación.';
+                        // Bloqueo y Alerta exigida por el usuario
+                        alert('ACCESO A GPS DENEGADO\n\nEl sistema de asistencia requiere obligatoriamente conocer su ubicación. Por favor, permita el acceso a la ubicación en su navegador e intente de nuevo.');
+                    } else if (error.code === error.POSITION_UNAVAILABLE) {
+                        mensajeError = 'La información de ubicación no está disponible.';
+                    } else if (error.code === error.TIMEOUT) {
+                        mensajeError = 'Tiempo de espera agotado al obtener ubicación.';
+                    }
+                    
+                    setStatus(mensajeError, 'error');
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 15000,
+                    maximumAge: 0
+                }
+            );
+        }
+
+        async function enviarDatos(datos, tipoRegistro) {
+            try {
+                const response = await fetch('/api/registrar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(datos)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    setStatus(`¡Éxito! ${result.mensaje}`, 'success');
+                    // Reiniciar el select después de un registro exitoso
+                    setTimeout(() => {
+                        document.getElementById('tecnico').value = '';
+                        setStatus('', '');
+                    }, 4000);
+                } else {
+                    setStatus(`Error: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                setStatus('Error de red al intentar comunicarse con el servidor.', 'error');
+            } finally {
+                toggleLoading(tipoRegistro, false);
+            }
+        }
+    </script>
+</body>
+</html>
