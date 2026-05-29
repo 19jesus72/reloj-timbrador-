@@ -13,3 +13,10 @@ CREATE TABLE IF NOT EXISTS usuarios_admin (
     usuario VARCHAR(50) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS tecnicos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario VARCHAR(50) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    nombre_completo VARCHAR(100) NOT NULL
+);

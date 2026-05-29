@@ -7,16 +7,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
-            --success: #10b981;
-            --success-hover: #059669;
-            --danger: #ef4444;
-            --danger-hover: #dc2626;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --bg-primary: #241f47;
+            --accent: #fee004;
+            --accent-hover: #e6c803;
+            --text-main: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.7);
+            --card-bg: rgba(255, 255, 255, 0.05);
             --border: rgba(255, 255, 255, 0.1);
         }
 
@@ -28,8 +24,7 @@
         }
 
         body {
-            background-color: var(--bg-color);
-            background-image: radial-gradient(circle at top right, #1e1b4b, #0f172a);
+            background-color: var(--bg-primary);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
@@ -42,18 +37,12 @@
             width: 100%;
             max-width: 400px;
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(10px);
             border: 1px solid var(--border);
-            border-radius: 24px;
+            border-radius: 16px;
             padding: 2rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            animation: slideUp 0.5s ease-out;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
         }
 
         .header {
@@ -62,21 +51,38 @@
         }
 
         .header h1 {
-            font-size: 1.75rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            background: linear-gradient(to right, #60a5fa, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text-main);
             margin-bottom: 0.5rem;
+        }
+        
+        .header h1 span {
+            color: var(--accent);
         }
 
         .header p {
             color: var(--text-muted);
-            font-size: 0.875rem;
+            font-size: 0.9rem;
+        }
+
+        .logout-link {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s;
+        }
+        
+        .logout-link:hover {
+            color: var(--accent);
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
+            text-align: left;
         }
 
         .form-group label {
@@ -87,42 +93,60 @@
             color: var(--text-muted);
         }
 
-        select {
+        select, textarea {
             width: 100%;
             padding: 1rem;
-            border-radius: 12px;
-            background: rgba(15, 23, 42, 0.6);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.2);
             border: 1px solid var(--border);
             color: var(--text-main);
             font-size: 1rem;
-            appearance: none;
             outline: none;
             transition: all 0.3s ease;
-            cursor: pointer;
+        }
+        
+        select option {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
         }
 
-        select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        select:focus, textarea:focus {
+            border-color: var(--accent);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        #actividades-container {
+            display: none; /* Oculto por defecto, se muestra al marcar salida */
+            animation: slideDown 0.3s ease-out forwards;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .buttons-container {
             display: flex;
             flex-direction: column;
             gap: 1rem;
-            margin-top: 2rem;
+            margin-top: 1.5rem;
         }
 
         .btn {
             width: 100%;
             padding: 1.25rem;
             border: none;
-            border-radius: 16px;
+            border-radius: 8px;
             font-size: 1.125rem;
             font-weight: 700;
-            color: white;
+            color: var(--bg-primary);
+            background-color: var(--accent);
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+            transition: transform 0.2s, background-color 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -140,23 +164,21 @@
         }
 
         .btn-entrada {
-            background-color: var(--success);
-            box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.39);
+            background-color: var(--accent);
         }
 
         .btn-entrada:hover:not(:disabled) {
-            background-color: var(--success-hover);
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.23);
+            background-color: var(--accent-hover);
         }
 
         .btn-salida {
-            background-color: var(--danger);
-            box-shadow: 0 4px 14px 0 rgba(239, 68, 68, 0.39);
+            background-color: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
         }
 
         .btn-salida:hover:not(:disabled) {
-            background-color: var(--danger-hover);
-            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.23);
+            background-color: rgba(254, 224, 4, 0.1);
         }
 
         .status {
@@ -175,56 +197,62 @@
         }
 
         .status.error {
-            background: rgba(239, 68, 68, 0.1);
+            background: rgba(239, 68, 68, 0.2);
             color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
         }
 
         .status.success {
-            background: rgba(16, 185, 129, 0.1);
+            background: rgba(16, 185, 129, 0.2);
             color: #6ee7b7;
-            border: 1px solid rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.4);
         }
 
         .status.loading {
-            background: rgba(59, 130, 246, 0.1);
-            color: #93c5fd;
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            background: rgba(254, 224, 4, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(254, 224, 4, 0.2);
         }
 
         .loader {
             display: none;
             width: 20px;
             height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
+            border: 3px solid rgba(36, 31, 71, 0.3);
             border-radius: 50%;
-            border-top-color: #fff;
+            border-top-color: var(--bg-primary);
             animation: spin 1s ease-in-out infinite;
         }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        
+        .btn-salida .loader {
+            border: 3px solid rgba(254, 224, 4, 0.3);
+            border-top-color: var(--accent);
         }
     </style>
 </head>
 <body>
 
     <div class="container">
+        <a href="{{ url_for('logout_tecnico') }}" class="logout-link">Cerrar Sesión</a>
+        
         <div class="header">
-            <h1>Reloj Timbrador</h1>
-            <p>Registro de asistencia de campo</p>
+            <h1>Hola, <span>{{ session.get('tecnico_nombre') }}</span></h1>
+            <p>Registra tu asistencia de campo</p>
         </div>
 
         <div class="form-group">
-            <label for="tecnico">Seleccionar Técnico</label>
-            <select id="tecnico">
-                <option value="" disabled selected>Elige tu nombre...</option>
-                <!-- Ejemplos - reemplazar o cargar dinámicamente -->
-                <option value="Carlos Perez">Carlos Perez</option>
-                <option value="Ana Gomez">Ana Gomez</option>
-                <option value="Luis Ramirez">Luis Ramirez</option>
-                <option value="Maria Torres">Maria Torres</option>
+            <label for="ingeniero">Ingeniero a Cargo *</label>
+            <select id="ingeniero" required>
+                <option value="" disabled selected>Selecciona a tu supervisor...</option>
+                <option value="Daniel Vizuete">Daniel Vizuete</option>
+                <option value="David Maza">David Maza</option>
+                <option value="Edwin Llumiquinga">Edwin Llumiquinga</option>
             </select>
+        </div>
+
+        <div class="form-group" id="actividades-container">
+            <label for="actividades">Desglose de actividades diarias *</label>
+            <textarea id="actividades" placeholder="Describe brevemente las tareas realizadas hoy..."></textarea>
         </div>
 
         <div class="buttons-container">
@@ -243,6 +271,9 @@
 
     <script>
         const statusEl = document.getElementById('status');
+        const actividadesContainer = document.getElementById('actividades-container');
+        const actividadesInput = document.getElementById('actividades');
+        let salidaEnProceso = false;
 
         function setStatus(message, type) {
             statusEl.textContent = message;
@@ -272,11 +303,31 @@
         }
 
         function registrar(tipoRegistro) {
-            const tecnico = document.getElementById('tecnico').value;
-
-            if (!tecnico) {
-                setStatus('Por favor, selecciona un técnico.', 'error');
+            const ingeniero = document.getElementById('ingeniero').value;
+            
+            if (!ingeniero) {
+                setStatus('Por favor, selecciona al Ingeniero a Cargo.', 'error');
                 return;
+            }
+
+            // Lógica para exigir actividades en salida
+            if (tipoRegistro === 'Salida') {
+                if (!salidaEnProceso) {
+                    // Primer clic: muestra el textarea y cambia el botón
+                    actividadesContainer.style.display = 'block';
+                    salidaEnProceso = true;
+                    document.querySelector('#btn-salida .btn-text').textContent = 'Confirmar Salida';
+                    actividadesInput.focus();
+                    setStatus('Por favor, describe tus actividades antes de confirmar la salida.', 'loading');
+                    return;
+                } else {
+                    // Segundo clic: verifica que esté lleno
+                    if (!actividadesInput.value.trim()) {
+                        setStatus('Las actividades diarias son obligatorias.', 'error');
+                        actividadesInput.focus();
+                        return;
+                    }
+                }
             }
 
             if (!navigator.geolocation) {
@@ -291,11 +342,12 @@
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const datos = {
-                        nombre_tecnico: tecnico,
                         tipo_registro: tipoRegistro,
                         latitud: position.coords.latitude,
                         longitud: position.coords.longitude,
-                        precision_gps: position.coords.accuracy
+                        precision_gps: position.coords.accuracy,
+                        ingeniero_a_cargo: ingeniero,
+                        actividades_diarias: tipoRegistro === 'Salida' ? actividadesInput.value.trim() : ''
                     };
 
                     enviarDatos(datos, tipoRegistro);
@@ -306,8 +358,7 @@
                     
                     if (error.code === error.PERMISSION_DENIED) {
                         mensajeError = 'PERMISO DENEGADO: Debes activar la ubicación.';
-                        // Bloqueo y Alerta exigida por el usuario
-                        alert('ACCESO A GPS DENEGADO\n\nEl sistema de asistencia requiere obligatoriamente conocer su ubicación. Por favor, permita el acceso a la ubicación en su navegador e intente de nuevo.');
+                        alert('ACCESO A GPS DENEGADO\n\nEl sistema requiere obligatoriamente conocer su ubicación. Por favor, permita el acceso en su navegador e intente de nuevo.');
                     } else if (error.code === error.POSITION_UNAVAILABLE) {
                         mensajeError = 'La información de ubicación no está disponible.';
                     } else if (error.code === error.TIMEOUT) {
@@ -326,7 +377,9 @@
 
         async function enviarDatos(datos, tipoRegistro) {
             try {
-                const response = await fetch('/api/registrar', {
+                const apiUrl = "{{ url_for('registrar_asistencia') }}";
+                
+                const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -338,9 +391,17 @@
 
                 if (response.ok) {
                     setStatus(`¡Éxito! ${result.mensaje}`, 'success');
-                    // Reiniciar el select después de un registro exitoso
+                    
+                    // Resetear formulario de salida
+                    if (tipoRegistro === 'Salida') {
+                        salidaEnProceso = false;
+                        document.querySelector('#btn-salida .btn-text').textContent = 'Registrar Salida';
+                        actividadesContainer.style.display = 'none';
+                        actividadesInput.value = '';
+                    }
+                    document.getElementById('ingeniero').value = '';
+                    
                     setTimeout(() => {
-                        document.getElementById('tecnico').value = '';
                         setStatus('', '');
                     }, 4000);
                 } else {
